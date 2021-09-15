@@ -31,14 +31,13 @@ postsRouter.post('/' ,(req ,resp) =>{
         const newPost = { ...req.body, 
             postId: uniqid(), 
             cover:"https://www.google.com/imgres?imgurl=https%3A%2F%2Fmiro.medium.com%2Fmax%2F1200%2F1*mk1-6aYaf_Bes1E3Imhc0A.jpeg&imgrefurl=https%3A%2F%2Ftowardsdatascience.com%2F3-numpy-image-transformations-on-baby-yoda-c27c1409b411&tbnid=gOUAFhrbQ2nYQM&vet=12ahUKEwi2sZX3ioHzAhUJFBoKHYKbBdEQMygAegUIARDLAQ..i&docid=OXvyXJop1qSGqM&w=1200&h=900&q=image&ved=2ahUKEwi2sZX3ioHzAhUJFBoKHYKbBdEQMygAegUIARDLAQ", 
-            // readTime:{ value,
-            //     unit
-            // },
+            //  value,
+            // unit,
             // author:{ surname,
             //   avatar:`https://ui-avatars.com/api/?name=${surname}`
             // },
-            //   content:"HTML" ,
-            //   createdAt: new Date() 
+              content:"HTML" ,
+              createdAt: new Date() 
             }
               console.log(newPost)
         const posts = JSON.parse(fs.readFileSync(postsJSONFilePath))
