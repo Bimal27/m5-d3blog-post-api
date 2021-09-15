@@ -29,21 +29,16 @@ postsRouter.post('/' ,(req ,resp) =>{
     try {
         // const {category, title} = req.body
         const newPost = { ...req.body, 
-            postId: uniqid(), 
+            _id: uniqid(), 
             cover:"https://www.google.com/imgres?imgurl=https%3A%2F%2Fmiro.medium.com%2Fmax%2F1200%2F1*mk1-6aYaf_Bes1E3Imhc0A.jpeg&imgrefurl=https%3A%2F%2Ftowardsdatascience.com%2F3-numpy-image-transformations-on-baby-yoda-c27c1409b411&tbnid=gOUAFhrbQ2nYQM&vet=12ahUKEwi2sZX3ioHzAhUJFBoKHYKbBdEQMygAegUIARDLAQ..i&docid=OXvyXJop1qSGqM&w=1200&h=900&q=image&ved=2ahUKEwi2sZX3ioHzAhUJFBoKHYKbBdEQMygAegUIARDLAQ", 
-            //  value,
-            // unit,
-            // author:{ surname,
-            //   avatar:`https://ui-avatars.com/api/?name=${surname}`
-            // },
-              content:"HTML" ,
-              createdAt: new Date() 
+            content:"HTML" ,
+            createdAt: new Date() 
             }
               console.log(newPost)
         const posts = JSON.parse(fs.readFileSync(postsJSONFilePath))
         posts.push(newPost)
         fs.writeFileSync(postsJSONFilePath, JSON.stringify(posts))
-        resp.status(201).send(newPost)
+        resp.status(201).send({ _id: newPost._id})
         
     } catch (error) {
         resp.send({message: error.message});
@@ -52,8 +47,15 @@ postsRouter.post('/' ,(req ,resp) =>{
 })
 
 // 3. get single the post
-postsRouter.get('/:postId' ,(req ,resp) =>{
+postsRouter.get('/:_id' ,(req ,resp) =>{
     try {
+        const posts = JSON.parse(fs.readFileSync(postsJSONFilePath))
+        const singlePost = posts.find(p=>p._id === req.params._id)
+        if(singlePost){
+            resp.send(singlePost)
+        }else{
+            resp.send("Not Found")
+        }
         
     } catch (error) {
         resp.send(500).send({message: error.message});
@@ -63,8 +65,12 @@ postsRouter.get('/:postId' ,(req ,resp) =>{
 
 
 // 1. delete the post
-postsRouter.delete('/:postId' ,(req ,resp) =>{
+postsRouter.delete('/:_id' ,(req ,resp) =>{
     try {
+        const posts = JSON.parse(fs.readFileSync(postsJSONFilePath))
+        const filteredPosts = posts.filter(post => post._id !== req.params._id)
+        fs.writeFileSync(postsJSONFilePath, JSON.stringify(filteredPosts))
+        resp.status(204).send()
         
     } catch (error) {
         resp.send(500).send({message: error.message});
@@ -73,8 +79,14 @@ postsRouter.delete('/:postId' ,(req ,resp) =>{
 })
 
 // 1. update the post
-postsRouter.put('/:postId' ,(req ,resp) =>{
+postsRouter.put('/:_id' ,(req ,resp) =>{
     try {
+        const posts = JSON.parse(fs.readFileSync(postsJSONFilePath))
+        const index = posts.findIndex(post => post._id === req.params._id)
+        const updatedPost = { ...posts[index], ...req.body }
+        posts[index] = updatedPost
+        fs.writeFileSync(postsJSONFilePath, JSON.stringify(posts))
+        resp.send(updatedPost)
         
     } catch (error) {
         resp.send(500).send({message: error.message});
